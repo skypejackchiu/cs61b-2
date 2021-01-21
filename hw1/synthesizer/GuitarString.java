@@ -53,7 +53,7 @@ public class GuitarString {
 
         double frontItem = buffer.dequeue();
         double secondItem = buffer.peek();
-        double newitem = (frontItem + secondItem) / 2 * DECAY;
+        double newitem =  (frontItem + secondItem) / 2 * DECAY;
         buffer.enqueue(newitem);
     }
 

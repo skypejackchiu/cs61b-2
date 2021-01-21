@@ -84,4 +84,28 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
                 return rb[first];
             }
         }
+
+        @Override
+        public Iterator<T> iterator(){
+            return new ARBufferIterator();
+        }
+
+        private class ARBufferIterator implements Iterator<T>{
+            private int Pos;
+
+            public ARBufferIterator(){
+                Pos = 0;
+            }
+
+            public boolean hasNext(){
+                return Pos < capacity;
+            }
+
+            public T next(){
+                T returnRbItem = rb[Pos];
+                Pos += 1;
+                return returnRbItem;
+            }
+        }
+
 }
