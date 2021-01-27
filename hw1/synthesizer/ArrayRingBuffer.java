@@ -91,20 +91,23 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         }
 
         private class ARBufferIterator implements Iterator<T>{
-            private int Pos;
+            private int position;
+            private int numRemain;
 
             public ARBufferIterator(){
-                Pos = 0;
+                numRemain = fillCount();
+;               position = first;
             }
 
             public boolean hasNext(){
-                return Pos < capacity;
+                return numRemain > 0;
             }
 
             public T next(){
-                T returnRbItem = rb[Pos];
-                Pos += 1;
-                return returnRbItem;
+;               T returnItem = rb[position];
+                position += 1;
+                numRemain -= 1;
+                return returnItem;
             }
         }
 
