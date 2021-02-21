@@ -94,31 +94,19 @@ public class Board implements WorldState {
         return neighbors;
     }
 
-    private int[][] createGoal(){
-        int count = 0;
-        int[][] goal = new int[size][size];
-        for (int i = 0; i < size; i += 1) {
-            for (int j = 0; j < size; j += 1) {
-                goal[i][j] = count;
-                count += 1;
-            }
-            goal[size - 1][size - 1] = BLANK;
-        }
-        return goal;
-    }
-
     /**
      *  Hamming estimate: The number of tiles in the wrong position.
      */
     public int hamming() {
         int distance = 0;
-        int[][]goal = createGoal();
-        for (int i = 0; i < size; i += 1) {
-            for (int j = 0; j < size; j += 1) {
-                if (i == j && i == size - 1) {
+        for (int r = 0; r < size; r += 1) {
+            for (int c = 0; c < size; c += 1) {
+                if (r == c && r == size - 1) {
                     break;
                 }
-                if (tileAt(i, j) != goal[i][j]) {
+                int expectedR = (tileAt(r,c) - 1) / size;
+                int expectedC = (tileAt(r,c) - 1) % size;
+                if (expectedR != r || expectedC != c) {
                     distance += 1;
                 }
             }
@@ -131,7 +119,7 @@ public class Board implements WorldState {
      * from the tiles to their goal positions.
      */
     public int manhattan() {
-        int estimatedDistance = 0;
+        int distance = 0;
         for (int r = 0; r < size; r += 1) {
             for (int c = 0; c < size; c += 1) {
                 if (tileAt(r,c) == BLANK) {
@@ -139,11 +127,11 @@ public class Board implements WorldState {
                 }
                 int expectedR = (tileAt(r,c) - 1) / size;
                 int expectedC = (tileAt(r,c) - 1) % size;
-                estimatedDistance += Math.abs((expectedR - r));
-                estimatedDistance += Math.abs((expectedC - c));
+                distance += Math.abs((expectedR - r));
+                distance += Math.abs((expectedC - c));
             }
         }
-        return estimatedDistance;
+        return distance;
     }
 
     /**
@@ -152,8 +140,8 @@ public class Board implements WorldState {
      * Gradescope.
      */
     public int estimatedDistanceToGoal() {
-        return manhattan();
-        // return hamming();
+        // return manhattan();
+        return hamming();
     }
 
     /**
@@ -170,6 +158,11 @@ public class Board implements WorldState {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     /** Returns the string representation of the board.
