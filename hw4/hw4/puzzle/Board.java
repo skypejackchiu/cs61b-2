@@ -33,9 +33,9 @@ public class Board implements WorldState {
      */
     public int tileAt(int i, int j) {
         if (!validPosition(i, j)) {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Invalid index");
         }
-            return tiles[i][j];
+        return tiles[i][j];
     }
 
     /**
@@ -131,21 +131,19 @@ public class Board implements WorldState {
      * from the tiles to their goal positions.
      */
     public int manhattan() {
-        int distance = 0;
-        int[][]goal = createGoal();
-        for (int i = 0; i < size; i += 1) {
-            for (int j = 0; j < size; j += 1) {
-                if (tileAt(i,j) == BLANK) {
+        int estimatedDistance = 0;
+        for (int r = 0; r < size; r += 1) {
+            for (int c = 0; c < size; c += 1) {
+                if (tileAt(r,c) == BLANK) {
                     continue;
                 }
-                int expectedX = (goal[i][j] - 1) % size;
-                int expectedY = (goal[i][j] - 1) / size;
-                int actualX = (tileAt(i,j) - 1) % size;
-                int actualY = (tileAt(i,j) - 1) / size;
-                distance += Math.abs((expectedX - actualX)) + Math.abs((expectedY - actualY));
+                int expectedR = (tileAt(r,c) - 1) / size;
+                int expectedC = (tileAt(r,c) - 1) % size;
+                estimatedDistance += Math.abs((expectedR - r));
+                estimatedDistance += Math.abs((expectedC - c));
             }
         }
-        return distance;
+        return estimatedDistance;
     }
 
     /**
@@ -155,6 +153,7 @@ public class Board implements WorldState {
      */
     public int estimatedDistanceToGoal() {
         return manhattan();
+        // return hamming();
     }
 
     /**
@@ -173,8 +172,8 @@ public class Board implements WorldState {
         }
     }
 
-    /** Returns the string representation of the board. 
-      * Uncomment this method. */
+    /** Returns the string representation of the board.
+     * Uncomment this method. */
     public String toString() {
         StringBuilder s = new StringBuilder();
         int N = size();
